@@ -17,7 +17,7 @@ export const MenuToggle: FC<MenuToggleProps> = ({ isOpen, onToggle}) =>{
 
         {isOpen?
          <Icon as = {FaTimes} />
-         : <Icon as = {FaBars} /> }
+        : <Icon as = {FaBars} /> }
     </Box>
     )
 }
