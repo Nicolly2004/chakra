@@ -20,15 +20,19 @@ export const Header: FC<HeaderProps> = ({isOpen, onToggle}) => {
    paddingY={10}
    align="center" 
    transition="all 0.2s"
-   maxH="130px"
+   maxH={{ base: 'auto ', md: '130px' }}
+   bg="gray.100"
+   zIndex="9999"
+   position="fixed"
    >
 
-   <Link href="/">
-   <Heading>My Food</Heading>
-   </Link>
    <MenuToggle isOpen={isOpen} onToggle={onToggle} />
+   <Link href="/">
+   <Heading fontSize={['12px','2rem']}>My Food</Heading>
+   </Link>
+   
    <Menu isOpen={isOpen}/>
-   <Flex gap="2">
+   <Flex gap="4" display={{ base: isOpen? 'flex': 'none', md: 'flex' }}>
 
     <Button 
     as={Link} 
