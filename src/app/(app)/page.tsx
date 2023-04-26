@@ -38,6 +38,7 @@ export default function Page() {
     Peça e receba onde estiver
     </Heading>
    </Flex>
+
    <Flex as="section" w="100%">
     <FormControl
      flexDirection="row"
@@ -46,6 +47,7 @@ export default function Page() {
       marginX="48" 
       marginTop="8" 
       >
+
       <InputGroup>
       <InputLeftAddon bg="none" border="none">
       <Icon as={GoSearch} />
@@ -57,18 +59,21 @@ export default function Page() {
       onChange={(evento) => setBusca(evento.target.value)} 
       borderRadius="none"
         />
+
       </InputGroup>
       <Button colorScheme= "red" borderRadius="none">
         Buscar
         </Button>
     </FormControl>
    </Flex>
+
    <Flex as="section" mt={10} gap={4}>
       <CardDestaque src="/hamburger.avif"
     path="/"
     titulo="Restaurantes"
     color="red"
     />
+
     <CardDestaque
     src="/market.avif"
     path="/"
