@@ -3,9 +3,42 @@
 import { Input } from '@/components/Input'
 import { Flex, Heading, Button,Text} from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
-import Head from "next/head";
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+
+const validacaoLogin = yup.object().shape({
+    email: yup
+    .string()
+    .email('Você precisa informar um e-mail válido')
+    .required('Você precisa informar um e-mail'),
+    senha: yup
+    .string()
+    .required('Informe sua senha')
+    .min(8,'Sua senha precisa ter no mínino 8 caracteres'),
+})
+
+type LoginDados = {
+    email: string 
+    senha: string
+}
 
 export default function Login() {
+    const {
+        register, 
+        handleSubmit,
+        formState: {isLoading, errors},
+    } = useForm<LoginDados>({
+        resolver: yupResolver(validacaoLogin),
+        
+    });
+
+    const onSubmit = (data: LoginDados) => {
+        console.log(data)
+        }
+    
+    
     return(
 
         <Flex 
@@ -28,19 +61,25 @@ export default function Login() {
              direction="column"
              gap={5}
              pt={2}
+             onSubmit={handleSubmit(onSubmit)}
              >
                 <Input
                 id="email"
                 type="email"
                 label="E-mail"
                 placeholder="nicolly@email.com" 
+                {...register('email')}
+                error={errors.email}
                 />
                 <Input 
                 id="senha"
                 type="password"
-                label="Senha" />
+                label="Senha"
+                {...register('senha')}
+                error={errors.senha}
+                 />
                
-               <Button colorScheme="green">Entrar</Button>
+               <Button type="submit" colorScheme="green" isLoading={isLoading}>Entrar</Button>
 
              </Flex>
              <Flex as="footer" borderTop="1px solid rgba(0,0,0,.1)"
