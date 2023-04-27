@@ -36,7 +36,7 @@ export const Header: FC<HeaderProps> = ({isOpen, onToggle}) => {
 
     <Button 
     as={Link} 
-    href="/"
+    href="/cadastro"
     variant="link"
     colorScheme="red">
     Crie sua conta
@@ -44,7 +44,7 @@ export const Header: FC<HeaderProps> = ({isOpen, onToggle}) => {
 
     <Button
     as={Link} 
-    href="/"
+    href="/login"
     colorScheme="red">
       Entrar
       </Button>
