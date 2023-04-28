@@ -9,7 +9,7 @@ export default function Loading() {
      bg="red.300" 
      color="white"
      align="center"
-     justify="center"
+     direction="column"
      >
         <Heading fontSize="2rem">MyFood</Heading>
         <Heading fontSize="1rem">Carregando</Heading>

@@ -10,7 +10,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-br">
       <head />
-      <body>
+      <body style={{overflowX: 'hidden' }}>
         <Providers>{children}</Providers>
       </body>
     </html>

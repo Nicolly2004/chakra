@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { Flex, Heading, Box, Text, Image,Icon } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import { FaStar } from 'react-icons/fa'
+import { StarRating } from '../StarRating'
 
 
 interface CardLojaProps {
@@ -74,6 +75,9 @@ export const CardLoja: FC<CardLojaProps> = ({
 
                 <Flex gap={2} fontSize="0.9rem" color="blackAlpha.500">
                 <Text>{tempo}</Text>
+
+                <StarRating nota={nota} />
+                
                 <Text as="span">•</Text>
 
                 {taxaEntrega > 0 ? (
