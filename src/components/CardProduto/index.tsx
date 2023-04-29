@@ -1,7 +1,15 @@
 import { FC } from "react"
-import { Card, CardBody, Heading, Image, Stack, Text} from '@chakra-ui/react'
+import { 
+    Card,
+    CardBody,
+     Heading, 
+     Image, 
+     Stack, 
+     Text,
+    } from '@chakra-ui/react'
+import { formataMoeda } from "@/helpers/formataMoeda"
 
-interface CardProdutoProps{
+export interface CardProdutoProps{
     nome:string
     preco:number  
     descricao:string 
@@ -16,26 +24,24 @@ export const CardProduto: FC<CardProdutoProps> = ({
     image,
     
 }) => {
+
+    
+
     return (
-        <Card maxW="sm">
+        <Card maxW="sm"_hover = {{transform: 'scale(1.01)'}}
+          transition="all 0.2s">
                 <CardBody  padding={0}>
                     <Image 
-                    src="https://placehold.co/398x157"
-                    alt={'Imagem do produto: Nome do produto'}
+                    src={image}
+                    alt={'Imagem do produto:' + nome}
                     />
                     <Stack mt={5} mx={5}>
-                        <Heading size="md">Nome do Produto</Heading>
-                        <Text noOfLines={3} >
-                            Lorem ipsum dolor sit, 
-                            amet consectetur adipisicing elit.
-                             Molestias ea nam in! Optio expedita 
-                             accusamus sed libero quia facere maiores 
-                             neque facilis eos eum, suscipit odit,
-                              officia labore, ratione assumenda!
-                        </Text>
-                        <Text color="green.500">R$75,28</Text>
+                        <Heading size="md">{nome}</Heading>
+                        <Text noOfLines={3} >{descricao}</Text>
+                        <Text color="green.500">{formataMoeda(preco)}</Text>
                     </Stack>
                 </CardBody>
             </Card>
     )
 }
+

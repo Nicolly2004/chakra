@@ -1,5 +1,6 @@
 'use client'
 import { CardProduto } from '@/components/CardProduto'
+import { CardProdutoHorizontal } from '@/components/CardProdutoHorizontal'
 import { StarRating } from '@/components/StarRating'
 import { Button, Card, CardBody, Divider, Flex, Heading, Icon, Image, Stack, Text} from '@chakra-ui/react'
 import { use } from 'react'
@@ -80,18 +81,70 @@ export default  function Loja({params:{ id }}: LojaProps) {
             </Flex>
         </Flex>
     </Flex>
-    <Flex as="section" direction="column" grow={1} maxW="1200px">
+    <Flex as="section" direction="column" grow={1} maxW="1200px " mt={2}>
         <Heading fontSize="1rem">Destaques</Heading>
         <Divider/>
 
-        <Flex wrap="wrap" gap={6}>
-            <CardProduto descricao="" image="" preco={0} nome="" />
-            <CardProduto descricao="" image="" preco={0} nome="" />
-            <CardProduto descricao="" image="" preco={0} nome="" />
-            <CardProduto descricao="" image="" preco={0} nome="" />
+        <Flex wrap="wrap" gap={6} mt={2}>
+            <CardProduto descricao="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus perspiciatis ipsum nobis officia, nulla animi suscipit error corporis tempora mollitia fugit consequuntur id minima saepe nam explicabo alias expedita quisquam." 
+            image="https://placehold.co/398x157" 
+            preco={19.70} 
+            nome="Grande Méqui" 
+            />
+            <CardProduto descricao=" Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus perspiciatis ipsum nobis officia, nulla animi suscipit error corporis tempora mollitia fugit consequuntur id minima saepe nam explicabo alias expedita quisquam." 
+            image="https://placehold.co/398x157"
+             preco={28.69} 
+             nome="Quadra" 
+             />
+            <CardProduto descricao="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus perspiciatis ipsum nobis officia, nulla animi suscipit error corporis tempora mollitia fugit consequuntur id minima saepe nam explicabo alias expedita quisquam." 
+            image="https://placehold.co/398x157" 
+            preco={30.75}
+             nome="EmiCi Lanchinho felizinho" 
+             />
+            <CardProduto descricao="Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus perspiciatis ipsum nobis officia, nulla animi suscipit error corporis tempora mollitia fugit consequuntur id minima saepe nam explicabo alias expedita quisquam."
+             image="https://placehold.co/398x157" 
+             preco={15.78} 
+             nome="EmiCi frango" 
+             />
 
         </Flex>
     </Flex>
-   </Flex>
+    <Flex 
+    as="section"
+    direction="column" 
+    grow={1}
+    mt={2}
+    maxH="1200px"
+    >
+        <Heading fontSize="1rem">Produtos</Heading>
+        <Divider/>
+        <Flex
+         direction={{base: 'column', md: 'row'}}  
+        gap={4}
+        wrap="wrap" 
+        mt={2}
+        p={1}
+        >
+            <CardProdutoHorizontal
+            descricao="Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora earum in aliquid vel temporibus laboriosam hic, praesentium reiciendis consequatur accusantium nam sapiente ex consectetur, expedita quis maxime? Pariatur, nam illo."
+            image="https://placehold.co/398x157"
+            preco={15.78}
+            nome="EmiCi galinha"
+            />
+            <CardProdutoHorizontal
+            descricao="Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora earum in aliquid vel temporibus laboriosam hic, praesentium reiciendis consequatur accusantium nam sapiente ex consectetur, expedita quis maxime? Pariatur, nam illo."
+            image="https://placehold.co/398x157"
+            preco={15.78}
+            nome="EmiCi galinha"
+            />
+            <CardProdutoHorizontal
+            descricao="Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora earum in aliquid vel temporibus laboriosam hic, praesentium reiciendis consequatur accusantium nam sapiente ex consectetur, expedita quis maxime? Pariatur, nam illo."
+            image="https://placehold.co/398x157"
+            preco={15.78}
+            nome="EmiCi galinha"
+            />
+        </Flex>   
+        </Flex>
+         </Flex>
    )
 }
