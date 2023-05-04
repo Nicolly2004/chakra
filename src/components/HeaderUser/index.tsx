@@ -1,7 +1,8 @@
 import { Button, Flex, HStack, Heading, IconButton, Text, Menu, MenuButton, MenuList, MenuItem, Portal, } from "@chakra-ui/react"
 import Link from "next/link"
 import { FC } from "react"
-import { FaCog, FaDoorOpen, FaShoppingBasket, FaUserAlt, FaUserCog } from "react-icons/fa"
+import { FaCog, FaDoorOpen, FaUserAlt, FaUserCog } from "react-icons/fa"
+import { CheckoutButton } from "../CheckoutButton"
 
 
 
@@ -38,19 +39,7 @@ Sair
 </MenuItem>
 </MenuList>
 </Menu>
-                
-                <Button
-                    as={Link}
-                    href="/"
-                    aria-label='Carrinho de comprar do usuario'
-                    leftIcon={<FaShoppingBasket />}
-                >
-
-                    <Flex direction="column" fontSize="10px" fontWeight={500}>
-                        <Text>R$ 0,00</Text>
-                        <Text> 0 Itens</Text>
-                    </Flex>
-                </Button>
+<CheckoutButton/>
             </HStack>
         </Flex>
     )

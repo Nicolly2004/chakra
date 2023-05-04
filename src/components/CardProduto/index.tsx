@@ -8,31 +8,31 @@ import {
      Text,
     } from '@chakra-ui/react'
 import { formataMoeda } from "@/helpers/formataMoeda"
+import { useCart } from "@/contexts/CartContext"
+import { Produto } from "@/services/produtoService"
 
 export interface CardProdutoProps{
-    nome:string
-    preco:number  
-    descricao:string 
-    image: string
+    produto: Produto
+    handleOpenModal: (id:string) => void
 }
 
 
 export const CardProduto: FC<CardProdutoProps> = ({
-    nome,
-    preco,
-    descricao,
-    image,
-    
+    produto: { nome, preco, descricao, imagem,id,},
+    handleOpenModal
 }) => {
 
-    
+  const { addToCart } = useCart()  
 
     return (
-        <Card maxW="sm"_hover = {{transform: 'scale(1.01)'}}
+        <Card 
+        maxW="sm" 
+        onClick={() => handleOpenModal(id)}   
+        _hover = {{transform: 'scale(1.01)'}}
           transition="all 0.2s">
                 <CardBody  padding={0}>
                     <Image 
-                    src={image}
+                    src={imagem}
                     alt={'Imagem do produto:' + nome}
                     />
                     <Stack mt={5} mx={5}>

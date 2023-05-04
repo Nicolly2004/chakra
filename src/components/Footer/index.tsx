@@ -13,7 +13,7 @@ export const Footer: FC = () => {
      gap={2} 
      justify="space-between"
      align="center"
-     borderTop="1px solid rgba(0,0,0,0.25"
+     borderTop="1px solid rgba(0,0,0,0.25)"
      marginX={4}
      marginTop={16}
      >
