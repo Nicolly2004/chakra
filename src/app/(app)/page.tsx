@@ -2,6 +2,7 @@
 
 import { CardDestaque } from '@/components/CardDestaque';
 import { CardLoja } from '@/components/CardLoja';
+import { listarLojas } from '@/services/lojaService';
 
 import {
   Button,
@@ -20,7 +21,8 @@ import {
   import { GoSearch } from 'react-icons/go'
 
 export default function Page() {
-  const[busca,setBusca] = useState("");
+  const[busca,setBusca] = useState("")
+  const data = listarLojas();
 
   return (
   <Flex   direction="column" align="center" grow={1}>
@@ -94,45 +96,10 @@ export default function Page() {
 
    <Flex  gap={8} mt={2} wrap="wrap" align="center">
 
-    <CardLoja 
-    path="/"
-    nome='EmiCi Donaldi' 
-    nota={4.5} 
-    categoria="Lanches" 
-    distancia="1.2km" 
-    tempo='30-40min'
-    taxaEntrega={2.25}
-    />
-
-<CardLoja 
-    path="/"
-    nome='EmiCi Donaldi' 
-    nota={4.5} 
-    categoria="Lanches" 
-    distancia="1.2km" 
-    tempo='30-40min'
-    taxaEntrega={38.90}
-    />
-
-<CardLoja 
-    path="/"
-    nome='EmiCi Donaldi' 
-    nota={4.5} 
-    categoria="Lanches" 
-    distancia="1.2km" 
-    tempo='30-40min'
-    taxaEntrega={15.0}
-    />
-
-<CardLoja 
-    path="/"
-    nome='EmiCi Donaldi' 
-    nota={4.5} 
-    categoria="Lanches" 
-    distancia="1.2km" 
-    tempo='30-40min'
-    taxaEntrega={5.0}
-    />
+    {data.map((loja) => (
+    <CardLoja key={loja.id} loja={loja} path={`/loja/${loja.id}`}/>
+    ))}
+    
 </Flex>
    </Flex>
   </Flex>
