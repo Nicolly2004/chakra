@@ -1,12 +1,13 @@
 
 import { useCart } from "@/contexts/CartContext";
 import { formataMoeda } from "@/helpers/formataMoeda";
-import { Button, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverHeader, PopoverTrigger, Stack, StackItem, Text, Image, IconButton, PopoverFooter} from "@chakra-ui/react";
+import { Button, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverHeader, PopoverTrigger, Stack, StackItem, Text, Image, IconButton, PopoverFooter, Heading} from "@chakra-ui/react";
+import Link from "next/link";
 import { FC } from "react"
 import { FaCreditCard, FaShoppingBasket, FaTrashAlt } from "react-icons/fa";
 
 export const CheckoutButton: FC = () => {
-    const { quantidade, valor, produtos} = useCart()
+    const { quantidade, valor, produtos, removeFromCart} = useCart()
     
     return (
         <Popover>
@@ -29,8 +30,10 @@ export const CheckoutButton: FC = () => {
                 <PopoverHeader>Seus Itens</PopoverHeader>
                 <PopoverBody>
                     <Stack>
-                        {produtos.map((produto, i) => (
-                            <StackItem key={i}>
+                        {produtos.map((produto, i) => {
+                            if (!produto) return null
+                            return (
+                                <StackItem key={i}>
                            <Flex gap={3} align="center">
                             <Image 
                             src={produto.imagem}
@@ -54,18 +57,33 @@ export const CheckoutButton: FC = () => {
                               aria-label="Remover Item"
                               icon={<FaTrashAlt />}
                               colorScheme="red"
+                              onClick={()=>{
+                                removeFromCart(produto.id)
+                              }}
                               ml="auto"
                               />
                            </Flex>
                             </StackItem>
-                        ))}
+                            )
+                            })}
+                            {produtos.length == 0 && (
+                                <StackItem>
+                                    <Heading fontSize="12px">
+                                        Não existe nenhum item no seu carrinho 
+                                        </Heading>
+                                </StackItem>
+                            )}
+                        
                     </Stack>
                     </PopoverBody>
                     <PopoverFooter>
                         <Button
                          width="100%"
                           colorScheme="green" 
-                          leftIcon={<FaCreditCard/>}>
+                          leftIcon={<FaCreditCard/>}
+                            as={Link}
+                            href="/pagamento"
+                            >
                             Ir para Formas de Pagamento
                         </Button>
                     </PopoverFooter>

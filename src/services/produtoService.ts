@@ -7,6 +7,7 @@ export interface Produto{
     descricao: string
     imagem: string
     desconto?: number
+    loja?: Loja 
 }
 
 export function getProdutos(): Produto[]{
@@ -18,6 +19,16 @@ export function getProdutos(): Produto[]{
             preco: 100,
             descricao: 'Descrição do produto 1',
             imagem: 'https://picsum.photos/200/300',
+            loja: {
+                id: '1',
+                nome: 'EmiCi Donaldis',
+                nota: 4.5,
+                categoria: 'Categoria 1',
+                distancia: '1.5 km',
+                tempo: '30 min',
+                taxaEntrega: 5,
+                pedidoMinimo: 10,
+                },
             },
             {
             id: '2',
