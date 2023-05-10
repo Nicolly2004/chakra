@@ -1,3 +1,4 @@
+import { Loja } from "./lojaService"
 
 
 export interface Produto{

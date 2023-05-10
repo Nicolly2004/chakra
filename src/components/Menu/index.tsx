@@ -7,7 +7,8 @@ interface MenuProps {
 }
 export const Menu: FC<MenuProps>= ({ isOpen }) => {
     return(
-        <Box display={{base: isOpen? 'block': 'none', md: 'block'}}
+        <Box 
+        display={{base: isOpen? 'block': 'none', md: 'block'}}
         flexBasis={{base:'100%', md:'auto'}}
         marginLeft={4}
         marginRight="auto"

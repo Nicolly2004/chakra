@@ -1,11 +1,13 @@
 'use client';
 
 import { Input } from '@/components/Input'
-import { Flex, Heading, Button,Text} from '@chakra-ui/react'
+import { Flex, Heading, Button,Text, useDisclosure, IconButton} from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useAuth } from '@/contexts/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 
 const validacaoLogin = yup.object().shape({
@@ -34,8 +36,13 @@ export default function Login() {
         
     });
 
-    const onSubmit = (data: LoginDados) => {
-        console.log(data)
+    const { login } = useAuth()
+    const {isOpen: IsShowing, onToggle} = useDisclosure()
+
+
+    const onSubmit = async (data: LoginDados) => {
+        await login (data)
+        window.location.href = '/'
         }
     
     
@@ -71,14 +78,22 @@ export default function Login() {
                 {...register('email')}
                 error={errors.email}
                 />
+                <Flex>
                 <Input 
                 id="senha"
-                type="password"
+                type={IsShowing ? 'text' : 'password'}
                 label="Senha"
                 {...register('senha')}
                 error={errors.senha}
                  />
-               
+                 <IconButton 
+                 aria-label="Trocar a visibilidade de senha"
+                 onClick={onToggle}
+                 icon={IsShowing ? <FaEye/> : <FaEyeSlash/>}
+                 />
+
+               </Flex>
+
                <Button type="submit" colorScheme="green" isLoading={isLoading}>Entrar</Button>
 
              </Flex>

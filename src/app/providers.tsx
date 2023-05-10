@@ -5,16 +5,19 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { tema } from '@/config/tema'
 import { ReactNode, FC } from 'react'
 import { CartProvider } from '@/contexts/CartContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 interface ProvidersProps {
   children: ReactNode
 }
 export const Providers: FC<ProvidersProps> = ({ children }) => {
   return (
+    <AuthProvider>
     <CartProvider>
     <CacheProvider>
       <ChakraProvider theme={tema}>{children}</ChakraProvider>
     </CacheProvider>
     </CartProvider>
+    </AuthProvider>
   )
 }

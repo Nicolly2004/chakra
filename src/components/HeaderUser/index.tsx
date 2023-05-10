@@ -1,8 +1,7 @@
 import { Button, Flex, HStack, Heading, IconButton, Text, Menu, MenuButton, MenuList, MenuItem, Portal, } from "@chakra-ui/react"
-import Link from "next/link"
 import { FC } from "react"
-import { FaCog, FaDoorOpen, FaUserAlt, FaUserCog } from "react-icons/fa"
 import { CheckoutButton } from "../CheckoutButton"
+import { UserMenu } from "../UserMenu"
 
 
 
@@ -21,26 +20,9 @@ export const HeaderUser: FC = () => {
         >
             <Heading fontSize="1rem">MyFood</Heading>
             <HStack>
-            <Menu>
-<MenuButton
-as={IconButton}
-aria-label="Informações do Usuário"
-icon={<FaUserAlt />}
-/>
-<MenuList>
-<MenuItem as={Link} href="/" icon={<FaUserCog />}>
-Perfil
-</MenuItem>
-<MenuItem as={Link} href="/" icon={<FaCog />}>
-Configurações
-</MenuItem>
-<MenuItem as={Link} href="/" color="red.500" icon={<FaDoorOpen />}>
-Sair
-</MenuItem>
-</MenuList>
-</Menu>
-<CheckoutButton/>
-            </HStack>
-        </Flex>
+                <UserMenu/>
+                <CheckoutButton/>
+                </HStack>
+                </Flex>
     )
-}
+ }
