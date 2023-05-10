@@ -3,15 +3,19 @@
 import { useCart } from "@/contexts/CartContext"
 import { formataMoeda } from "@/helpers/formataMoeda"
 import { obterUsuario } from "@/services/usuarioService"
-import { Button, Divider, Flex, Heading,Tab,TabList,TabPanel,TabPanels,Tabs,Text } from "@chakra-ui/react"
+import { Box, Button, Divider, Flex, Heading,Tab,TabList,TabPanel,TabPanels,Tabs,Text } from "@chakra-ui/react"
 import { redirect } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Input } from '@/components/Input'
+import { useForm } from 'react-hook-form'
 
 export default function PagamentoPage() {
     const { produtos, valor} =  useCart()
     const usuario = obterUsuario('1')
        const [freteTaxa, setFreteTaxa] = useState(0)
+       const { register, watch,handleSubmit} = useForm();
+
+       const finalizarCompra = (data: any) => {}
 
        useEffect(() => {
         setFreteTaxa(
@@ -117,39 +121,83 @@ export default function PagamentoPage() {
                 </Flex>
         </Flex>
         </Flex>
-<Flex as="section" mb={5} direction="column" mx={16}>
-    <Heading fontSize="20px" color="red.300">
-        Pagamento
-    </Heading>
-    <Text>Escolha sua forma de pagamento</Text>
-    <Divider />
+    <Flex as="section" mb={5} direction="column" mx={16}>
+        <Heading fontSize="20px" color="red.300">
+            Pagamento
+        </Heading>
+        <Text>Escolha sua forma de pagamento</Text>
+        <Divider />
 
-<Tabs mt={3} minH="40vh">
-    <TabList>
-        <Tab>Cartão de Crédito</Tab>
-        <Tab>Pix</Tab>
-    </TabList>
-    <TabPanels>
-<TabPanel>
-    <Flex as="form" direction="column" mx={16} gap={2}>
-    <Input id="cardNumber" label= "Número do cartão" type="number"  />
-    <Input
-    id="cardNome"
-    label="Nome Impresso no cartão"
-    type="text"
-    />
-    <Flex gap={3}>
-        <Input id="validade" label="Validade" type="text"/>
-        <Input id="cvv" label="CVV"  type="number"/>
+    <Tabs mt={3} minH="40vh">
+        <TabList>
+            <Tab>Cartão de Crédito</Tab>
+            <Tab>Pix</Tab>
+        </TabList>
+        <TabPanels>
+    <TabPanel>
+
+        <Flex
+         align="center" 
+         direction="column" 
+         as="form" 
+         onSubmit={handleSubmit(finalizarCompra)}
+         grow={1}
+         >
+        <Flex  justify="space-around" align="center" > 
+        <Flex 
+        direction="column" 
+        gap={2} 
+        borderRadius="7px" 
+        px={4} 
+        py={8}
+        boxShadow="8px 5px 15px rgba(0,0,0,0.3)" >
+        <Input id="cardNumber" label= "Número do cartão" type="number" {...register('cartaoNome')} />
+        <Input
+        id="cardNome"
+        label="Nome Impresso no cartão"
+        type="text"
+        />
+        <Flex gap={3}>
+            <Input id="validade" label="Validade" type="text" {...register('cartaoValidade')}/>
+            <Input id="cvv" label="CVV"  type="number" {...register('cvv')}/>
+        </Flex>
+        <Input id="cpf" label="CPF" type="text" {...register('cpf')} />
+        </Flex>
+        
+
+
+
+        <Flex ml={8}>
+            <Flex
+            bg='red.200'
+            w="300px"
+            h="150px"
+            p={4} 
+            borderRadius={8} 
+            color="white"
+            justify="flex-end"
+            >
+                <Heading>Seu Cartão</Heading>
+                <Flex direction="column" justify="flex-end" grow={1} >
+                <Text>{watch('cartaoNumero')}</Text>
+                <Flex gap={3}>
+                <Text>{watch('cartaoNome')}</Text>
+                <Text>{watch('cartaoValidade')}</Text>
+                </Flex>
+                </Flex>
+            </Flex>
+        </Flex>
+        </Flex>
+        <Button type="submit" colorScheme="green" mt="4" w="200px">
+            Pagar
+            </Button>
+        </Flex>
+        </TabPanel>
+    <TabPanel>Informações do Pix</TabPanel>
+        </TabPanels>
+    </Tabs>
     </Flex>
-    <Input id="cpf" label="CPF" type="text"/>
-    </Flex>
-    </TabPanel>
-<TabPanel>Informações do Pix</TabPanel>
-    </TabPanels>
-</Tabs>
-</Flex>
-    </Flex>
-    
-    )
-}
+        </Flex>
+        
+        )
+    }
