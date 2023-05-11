@@ -106,7 +106,7 @@ const cadastraUsuario = async (dados: FormularioCadastro) => {
             />
           <Input 
           label="Confirme sua Senha" 
-          id="sonfirme-senha" 
+          id="confirme-senha" 
           type="password" 
           {...register('confirmaSenha')}
                 error={errors.confirmaSenha}
