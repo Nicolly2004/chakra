@@ -1,5 +1,4 @@
 import { Usuario } from "@/services/usuarioService";
-import { useConst } from "@chakra-ui/react";
 import { FC, ReactNode, createContext, useContext, useEffect, useState } from "react";
 
 type LoginData = {

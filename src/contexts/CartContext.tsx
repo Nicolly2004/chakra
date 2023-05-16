@@ -11,7 +11,7 @@ interface CartContextData {
     produtos: ProdutoProps[];
     quantidade: number;
     valor: number;
-    addToCart: (item: ProdutoProps) => void
+    addToCart: (item: ProdutoProps) => void           
     removeFromCart: (id: any ) => void
 }
 
