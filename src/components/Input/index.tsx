@@ -18,7 +18,7 @@ interface InputBaseProps extends InputProps {
 const InputBase = ({id,type,label,error,...resto}: InputBaseProps,ref: any) => {
       return(
         <FormControl isInvalid={!!error}>
-            <FormLabel htmlFor={id}>{label}</FormLabel>
+            <FormLabel htmlFor={id} mb="0">{label}</FormLabel>
             <ChakraInput
              id={id} 
              type={type} 
