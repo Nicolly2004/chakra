@@ -1,5 +1,5 @@
 import { Produto,createProduto, updateProduto } from "@/services/produtoService"
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel,  Modal, ModalBody, ModalCloseButton,Textarea, ModalContent, ModalHeader, ModalOverlay, Select } from "@chakra-ui/react"
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel,  Modal, ModalBody, ModalCloseButton,Textarea, ModalContent, ModalHeader, ModalOverlay, Select, Image} from "@chakra-ui/react"
 import { FC } from "react"
 import { Input } from "@/components/Input"
 import { Loja } from "@/services/lojaService"
@@ -53,6 +53,7 @@ interface ProdutoForm {
     preco: number | string
     desconto: number | string
     loja_id: string | number
+    imagens: FileList
 }
 
 
@@ -62,7 +63,7 @@ export const ModalProduto: FC<ModalProdutoProps> = ({
     lojas,
     produto,
 }) => {
-    const {register, handleSubmit, formState: {errors,isSubmitting},setValue} = useForm<ProdutoForm>({
+    const {register, handleSubmit, formState: {errors,isSubmitting},setValue, watch} = useForm<ProdutoForm>({
         resolver: yupResolver(validacaoProduto),
     })
     const submitProduto = (data: ProdutoForm) => {
@@ -72,6 +73,7 @@ export const ModalProduto: FC<ModalProdutoProps> = ({
         }
         createProduto<ProdutoForm>(data)
     }
+
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay/>
@@ -136,7 +138,34 @@ export const ModalProduto: FC<ModalProdutoProps> = ({
                  )
                 }}
                 />
+             <FormControl>
+                <FormLabel htmlFor="imagens">Imagens do produto</FormLabel>
+                <input
+                type="file"
+                id="imagens"
+                {...register('imagens')}
+                multiple
+                />
+                <Flex gap={2} wrap="wrap" mt={2}>
+                    {[
+                        ...new Array(
+                            typeof watch('imagens') !== 'undefined'
+                            ? watch('imagens').length
+                            :0,
+                        ),
+                    ].map((value, index) => {
+                        return (
+                        <Image
+                        maxW="100px"
+                        alt="Preview de imagem"
+                         key={index} 
+                        src={URL.createObjectURL(watch('imagens').item(index))}
+                        />
+                        )
+                    })}
 
+                    </Flex>
+             </FormControl>
                <Button colorScheme="green" type="submit" mt={2} isDisabled={isSubmitting}>
                 Salvar
                </Button>
