@@ -45,6 +45,15 @@ const login = (loginData: LoginData) => {
                 nome: 'Nicolly Santos',
                 email: 'nicolly.snt@gmail.com',
                 id: '1',
+                endereco: {
+                    bairro: 'Dummy Bairro',
+                    cep: '010101110',
+                    cidade: 'Dummy Cidade',
+                    complemento: 'Dummy Complemento',
+                    logradouro: 'Dummy Rua',
+                    numero: '123',
+                    estado: 'SP',
+                },
             })
         }, 2000)
     })
