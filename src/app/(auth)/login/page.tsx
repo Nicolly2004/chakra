@@ -41,9 +41,13 @@ export default function Login() {
 
 
     const onSubmit = async (data: LoginDados) => {
-        await login (data)
-        window.location.href = '/'
+        const isLogged = await login (data)
+        if (isLogged) {
+            setTimeout(() => {
+            window.location.href = '/'
+            },9000 )
         }
+    }
     
     
     return(

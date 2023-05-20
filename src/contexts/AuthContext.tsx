@@ -1,9 +1,22 @@
-import { Usuario } from "@/services/usuarioService";
+'use client'
+import { apiClient } from "@/config/axios";
+import { notify } from "@/config/toast";
+import { Usuario , createLogin} from "@/services/usuarioService";
 import { FC, ReactNode, createContext, useContext, useEffect, useState } from "react";
+import decode from 'jwt-decode'
 
 type LoginData = {
     email: string
     senha: string 
+}
+
+
+interface TokenClaims{
+    iss:number | string
+    name: string
+    email:string
+    permissions: string[]
+    exp: number
 }
 
 interface AuthContextProps{
@@ -11,6 +24,7 @@ interface AuthContextProps{
     login: (loginData: LoginData) => Promise<boolean>
     logout: () => void;
     userData: Usuario
+    hasPermission: (permission: string) => boolean
 }
 
 
@@ -36,37 +50,59 @@ useEffect(() =>{
     window.localStorage.setItem('isLogged' , JSON.stringify(isLogged))
 }, [isLogged])
 
-const login = (loginData: LoginData) => {
-    return new Promise<boolean>((resolve) => {
-        setTimeout(() => {
-            resolve (true)
-            setIsLogged(true)
-            setUserData({
-                nome: 'Nicolly Santos',
-                email: 'nicolly.snt@gmail.com',
-                id: '1',
-                endereco: {
-                    bairro: 'Dummy Bairro',
-                    cep: '010101110',
-                    cidade: 'Dummy Cidade',
-                    complemento: 'Dummy Complemento',
-                    logradouro: 'Dummy Rua',
-                    numero: '123',
-                    estado: 'SP',
-                },
-            })
-        }, 2000)
-    })
+const login = async (loginData: LoginData) => {
+    try{
+       const {data} = await createLogin<LoginData>(loginData);
+       if(data.token !== null){
+        apiClient.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+        window.localStorage.setItem('access_token',data.token)
+
+        const TokenClaims = decode<TokenClaims>(data.token);
+
+        setUserData({
+         id: TokenClaims.iss as string,
+         nome: TokenClaims.name,
+         email: TokenClaims.email,
+         permissions: TokenClaims.permissions,
+        })
+
+        setIsLogged(true);
+        notify(data.message, 'success')
+        return true;
+       }
+
+    } catch (e: any) {
+        setIsLogged(true)
+        setUserData({} as Usuario)
+        if(e.response){
+            notify(e.response.data.message, 'error')
+            return false
+        }
+        notify('Ocorreu um erro inesperado', 'error')
+        return false
+    }
+    return false
+}
+
+
+const hasPermission = (permission: string) => {
+    if(!userData.permissions){
+        return false
+    }
+    return userData.permissions.includes(permission)
 }
 
 const logout = () =>{
     setIsLogged(false)
+    setUserData({} as Usuario)
+    window.localStorage.removeItem('access_token')
 }
 
 
     return (
-       < AuthContext.Provider value={{isLogged, login, logout, userData}}>
+       < AuthContext.Provider value={{hasPermission, isLogged, login, logout, userData}}>
         {children}
         </AuthContext.Provider>
     )
 }
+

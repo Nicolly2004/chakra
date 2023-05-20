@@ -27,7 +27,8 @@ export const CardDestaque: FC<CardDestaqueProps> = ({
         }
     }, [color])
 
-    return <Link href={path} _hover={{ textDecoration: 'none', transform: 'scale(1.02)'}}
+    return ( 
+    <Link href={path} _hover={{ textDecoration: 'none', transform: 'scale(1.02)'}}
     transition="all 0.2s">
         <Flex
         padding={4}
@@ -58,6 +59,5 @@ export const CardDestaque: FC<CardDestaqueProps> = ({
         </Flex>
         </Flex>
     </Link>
-
-
-    }
+    )
+ }

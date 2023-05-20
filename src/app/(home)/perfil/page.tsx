@@ -53,7 +53,7 @@ export default function PerfilPage(){
     } catch (error: any){
         console.log(error)
     }
- }
+  }
     
     /**
      * Não precisa do useEffect quandp usar a função no onChange do input
