@@ -1,5 +1,5 @@
 'use client'
-import { Flex, Heading, Button, Text , UseToast, useToast, position} from '@chakra-ui/react'
+import { Flex, Heading, Button, Text , useToast, position} from '@chakra-ui/react'
 import {Input} from '@/components/Input'
 import {Link} from '@chakra-ui/next-js'
 import * as yup from 'yup'
@@ -61,7 +61,7 @@ const cadastraUsuario = async (dados: FormularioCadastro) => {
        
        setTimeout(() => {
        window.location.href='login'
-       }, 9000);
+       }, 2000);
 
     } catch(e: any) {
       if(typeof e.response !== 'undefined') {

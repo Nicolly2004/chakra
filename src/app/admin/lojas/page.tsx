@@ -1,12 +1,17 @@
 'use client'
-import { listarLojas } from "@/services/lojaService";
-import { Button, Flex, FormControl, FormLabel, Heading, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Image, FormErrorMessage } from "@chakra-ui/react";
+import { Loja, cadastraLoja, listarLojas } from "@/services/lojaService";
+import { Text,Button, Flex, FormControl, FormLabel, Heading, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Image, FormErrorMessage,Spinner } from "@chakra-ui/react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { Input } from '@/components/Input'
 import * as yup from 'yup'
 import { yupResolver } from "@hookform/resolvers/yup";
 import {useForm} from 'react-hook-form'
 import { AdminHeader } from "../components/AdminHeader";
+import { getBase64 } from '../../../helpers/getBase64'
+import { formataMoeda } from "@/helpers/formataMoeda";
+import { notify } from "@/config/toast";
+import { useQuery ,useQueryClient } from "react-query";
+
 
 
 const validacaoLoja = yup.object().shape({
@@ -14,17 +19,12 @@ const validacaoLoja = yup.object().shape({
     categoria: yup.string().required('Informe a categoria da loja'),
     tempo: yup.string().required('Informe o tempo de preparo.'),
 
-    entrega: yup
-    .number()
-    .typeError("Informe uma taxa de entrega")
-    .required('Informe a taxa de entrega.'),
-
 
     logo: yup
     .mixed()
     .test('type', 'Envie uma imagem no formato JPG ou PNG',(value: any) =>{
-        if (value.lenth > 0) {
-            return value[0].type === 'image/jpeg' || value[0].type === 'image/jpeg'
+        if (value.length > 0) {
+            return value[0].type === 'image/png' || value[0].type === 'image/jpeg'
         }
         return false
     })
@@ -33,43 +33,136 @@ const validacaoLoja = yup.object().shape({
     cover: yup
     .mixed()
     .test('type', 'Envie uma imagem no formato JPG ou PNG',(value: any) =>{
-        if (value.lenth > 0) {
-            return value[0].type === 'image/jpeg' || value[0].type === 'image/jpeg'
+        if (value.length > 0) {
+            return value[0].type === 'image/png' || value[0].type === 'image/jpeg'
     }
     return false
 })
     .required('Informe a capa da loja'),
-});
+
+    pedidoMinimo: yup
+    .string()
+    .transform((value: string) => {
+        if(!value) return '0'
+
+        return (Number(value.replace(/\D/g,'')) / 100 ).toString()
+    })
+
+    .test({
+        name: 'pedido-minimo',
+        message: 'O pedido mínimo deve ser maior ou igual a R$ 0,00',
+        test: (value) => {
+            if(!value) return false
+
+            return Number(value) >= 0
+        },
+    })
+    .required('Informe o pedido Mínimo'),
+    
+    taxaEntrega: yup
+    .string()
+    .transform((value: string) => {
+        if(!value) return '0'
+
+        return (Number(value.replace(/\D/g,'')) / 100 ).toString()
+    })
+
+    .test({
+        name: 'taxa-entrega',
+        message: 'O valor da taxa deve ser maior ou igual a R$ 0,00',
+        test: (value) => {
+            if(!value) return false
+
+            return Number(value) >= 0
+        },
+    })
+   .required('Informe a taxa de entrega'),
+})
 
 type FormularioLoja = {
     nome:string
     categoria:string 
     tempo:string 
-    entrega: number 
     logo: any
     cover: any
+    pedidoMinimo:  string
+    taxaEntrega: string
 }
 
 
 export default function LojaIndex() {
-    const {register,handleSubmit,formState:{errors},watch,} = useForm<FormularioLoja>({
+    const {
+        register,
+        handleSubmit,
+        formState:{errors}
+        ,watch, 
+        setValue,
+        reset,} = useForm<FormularioLoja>({
      resolver: yupResolver(validacaoLoja)
     })
 
+    const {isLoading, isError, data, isFetched} = useQuery({
+        queryKey: ['lojas','adm'],
+        queryFn: listarLojas,
+    })
+    const qyeryClient = useQueryClient()
+
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const dadosLoja = listarLojas()
 
-    const salvarLoja = (dados: FormularioLoja) =>{
-        console.log(dados)
+    const salvarLoja = async ({
+        logo,
+        cover,
+        taxaEntrega,
+        pedidoMinimo,
+        ...resto
+    }: FormularioLoja) =>{
+        const imageLogo = await getBase64(logo[0])
+        const imageCover = await getBase64(cover[0])
+
+        const submitData: Loja = {
+            ...resto, 
+            imageCover,
+            imageLogo,nota:0,
+            pedidoMinimo: Number(pedidoMinimo.replace(/\D/g,''))/100,
+            taxaEntrega: Number(taxaEntrega.replace(/\D/g,''))/100,
+
+    } 
+        
+
+     console.log(submitData)
+
+        try{
+            const response = await cadastraLoja(submitData)
+            notify(response.data.message, 'success')
+            onClose()
+            reset()
+            useQueryClient.invalidateQuaries({ queryKey: ['lojas','adm'] })
+        }catch (e: any) {
+            if(e.response) {
+                notify (e.responde.data.message, 'error')
+                return
+            }
+            notify('Um erro ocorreu', 'error')
+        }
     }
-
+ 
 
     return (
     <Flex direction="column" grow={1} gap={4}>
-        <AdminHeader title='Lojas' buttonLabel="Nova Loja" onClick={onOpen}/>
+        <AdminHeader 
+        title='Lojas'
+         buttonLabel="Nova Loja" 
+         onClick={onOpen}
+         isFetching={isFetched}
+         />
         
         <Flex>
-            <Table variant="striped">
+            { isLoading? 
+            <Spinner size='md' /> 
+            : isError? 
+            <Text>Ocorreu um erro ao carregar as lojas</Text>
+             : 
+                <Table variant="striped">
                 <Thead>
                     <Tr>
                         <Th>Id</Th>
@@ -79,7 +172,7 @@ export default function LojaIndex() {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {dadosLoja.map((loja)=>(
+                    {data?.data?.map((loja)=>(
                         <Tr key= {loja.id}>
                         <Td>{loja.id}</Td>
                         <Td>{loja.nome}</Td>
@@ -102,6 +195,7 @@ export default function LojaIndex() {
                     ))}
                 </Tbody>
             </Table>
+            }
         </Flex>
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay/>
@@ -113,7 +207,22 @@ export default function LojaIndex() {
                     <Input label='Nome' type="text" id="nome"{...register('nome')} error={errors.nome}/>
                     <Input label='Categoria' type="text" id="categoria" {...register('categoria')} error={errors.categoria}/>
                     <Input label='Tempo de Preparo' id="tempo" type="text" {...register('tempo')} error={errors.tempo}/>
-                    <Input type='number' label="Taxa de Entrega" id="entrega" {...register('entrega')} error={errors.entrega}/>
+                    <Input label="Pedido minimo" type="text" id="pedidoMinimo" error={errors.pedidoMinimo} {...register('pedidoMinimo')} 
+                    onChange={({target}) => {
+                        setValue(
+                            'pedidoMinimo',
+                            formataMoeda(Number(target.value.replace(/\D/g,'')) / 100 ),
+                        )
+                    }} 
+                   />
+                    <Input label="Taxa de entrega" type="text" id="taxaEntrega" error={errors.taxaEntrega} {...register('taxaEntrega')}
+                    onChange={({target}) => {
+                        setValue(
+                            'taxaEntrega',
+                            formataMoeda(Number(target.value.replace(/\D/g,'')) / 100 ),
+                        )
+                    }} 
+                     />
                     <Input type="file" label="Logo" id="logo" {...register('logo')} display={'none'} />
                     
                     <FormControl isInvalid={!!errors.logo}>
@@ -135,10 +244,13 @@ export default function LojaIndex() {
 
                         </FormLabel>
                         {!!errors.logo && (
-                        <FormErrorMessage>{errors.logo?.message as String}</FormErrorMessage>
+                        <FormErrorMessage>
+                            {errors.logo?.message as String}
+                        </FormErrorMessage>
                       )}
+
                     </FormControl>
-                    <Input type="file" label="Capa" id="cover" {...register('cover')} display={'none'} error={errors.cover}/>
+                    <Input type="file" label="Capa" id="cover" {...register('cover')} display={'none'}/>
                     <FormControl isInvalid={!!errors.cover}>
                       <FormLabel htmlFor="cover">
                         <Image
@@ -146,7 +258,7 @@ export default function LojaIndex() {
                         src={ 
                             typeof watch('cover') !== 'undefined' && 
                             typeof watch('cover')[0] ==='object'
-                            ? URL.createObjectURL(watch('logo')[0])
+                            ? URL.createObjectURL(watch('cover')[0])
                             : 'https://placehold.co/1200x1250'
                         }
                         w="100%"
@@ -155,7 +267,7 @@ export default function LojaIndex() {
                         cursor={'pointer'}
                         />
                       </FormLabel>
-                      {!!errors.logo && (
+                      {!!errors.cover && (
                         <FormErrorMessage>{errors.cover?.message as String}</FormErrorMessage>
                       )}
                     </FormControl>
@@ -169,5 +281,6 @@ export default function LojaIndex() {
             </ModalBody>
         </ModalContent>
     </Modal>
-    </Flex>)
+    </Flex>
+    )
 }
