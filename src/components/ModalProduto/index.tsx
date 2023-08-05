@@ -53,7 +53,8 @@ const handleAddToCart = () => {
 }
 
 
-    return <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    return (
+<Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay/>
             <ModalContent>
                 <ModalHeader>
@@ -133,4 +134,5 @@ const handleAddToCart = () => {
             </ModalContent>
        
     </Modal>
+    )
 }

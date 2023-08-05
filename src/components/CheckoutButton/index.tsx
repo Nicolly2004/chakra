@@ -1,10 +1,25 @@
 
-import { useCart } from "@/contexts/CartContext";
-import { formataMoeda } from "@/helpers/formataMoeda";
-import { Button, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverHeader, PopoverTrigger, Stack, StackItem, Text, Image, IconButton, PopoverFooter, Heading} from "@chakra-ui/react";
-import Link from "next/link";
-import { FC } from "react"
-import { FaCreditCard, FaShoppingBasket, FaTrashAlt } from "react-icons/fa";
+    import { useCart } from "@/contexts/CartContext";
+    import { formataMoeda } from "@/helpers/formataMoeda";
+    import { Button,
+        Flex, 
+        Popover,
+        PopoverArrow, 
+        PopoverBody, 
+        PopoverContent, 
+        PopoverHeader,
+        PopoverTrigger,
+            Stack, 
+            StackItem,
+            Text,
+            Image,
+            IconButton,
+                PopoverFooter,
+                Heading
+                } from "@chakra-ui/react";
+    import Link from "next/link";
+    import { FC } from "react"
+    import { FaCreditCard, FaShoppingBasket, FaTrashAlt } from "react-icons/fa";
 
 export const CheckoutButton: FC = () => {
     const { quantidade, valor, produtos, removeFromCart} = useCart()
@@ -53,6 +68,7 @@ export const CheckoutButton: FC = () => {
                                 {formataMoeda(produto.preco * produto.quantidade)}
                               </Text>
                               </Flex>
+                              
                               <IconButton
                               aria-label="Remover Item"
                               icon={<FaTrashAlt />}

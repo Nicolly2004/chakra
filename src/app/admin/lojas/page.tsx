@@ -1,5 +1,5 @@
 'use client'
-import { Loja, cadastraLoja, listarLojas } from "@/services/lojaService";
+import { Loja, apagaLoja, atualizaLoja, cadastraLoja, listarLojas } from "@/services/lojaService";
 import { Text,Button, Flex, FormControl, FormLabel, Heading, IconButton, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, Image, FormErrorMessage,Spinner } from "@chakra-ui/react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { Input } from '@/components/Input'
@@ -11,6 +11,9 @@ import { getBase64 } from '../../../helpers/getBase64'
 import { formataMoeda } from "@/helpers/formataMoeda";
 import { notify } from "@/config/toast";
 import { useQuery ,useQueryClient } from "react-query";
+import { useState } from "react";
+import { ConfirmDelete } from "../components/ConfirmDelete";
+import { FormLoja } from "./FormLoja";
 
 
 
@@ -79,7 +82,7 @@ const validacaoLoja = yup.object().shape({
    .required('Informe a taxa de entrega'),
 })
 
-type FormularioLoja = {
+export type FormularioLoja = {
     nome:string
     categoria:string 
     tempo:string 
@@ -105,9 +108,65 @@ export default function LojaIndex() {
         queryKey: ['lojas','adm'],
         queryFn: listarLojas,
     })
-    const qyeryClient = useQueryClient()
-
+    const queryClient = useQueryClient()
     const {isOpen, onOpen, onClose} = useDisclosure()
+    const {
+        isOpen: isOpenDelete,
+        onOpen: OnOpenDelete,
+        onClose: onCloseDelete,
+    } = useDisclosure()
+
+const [loja,setLoja] = useState<Loja | null>()
+
+const handleDelete = (loja: Loja) => {
+    setLoja(loja)
+    OnOpenDelete()
+}
+
+const handleEdit = (loja: Loja ) => {
+    setLoja(loja)
+    onOpen()
+}
+
+const updateLoja= async ({
+    logo,
+    cover,
+    taxaEntrega,
+    pedidoMinimo,
+    ...resto
+}: FormularioLoja) =>{
+    const imageLogo = logo[0] ? await getBase64(logo[0]) : loja?.imageLogo
+    const imageCover = cover[0] ? await getBase64(cover[0]) : loja?.imageCover
+
+
+    const lojaData: Partial<Loja> = {
+        ...resto, 
+        imageCover,
+        imageLogo,
+        pedidoMinimo: Number(pedidoMinimo.replace(/\D/g,''))/100,
+        taxaEntrega:Number(taxaEntrega.replace(/\D/g,''))/100,
+    }
+try{
+    const {data} = await atualizaLoja(loja?.id || '', lojaData)
+    notify(data.message, 'success')
+    onClose()
+    queryClient.invalidateQueries({queryKey: ['lojas','adm']})
+} catch (e: any) {
+    notify(
+        e?.responde?.data?.message || 'Ocorreu erro ao atualizar',
+        'error',
+     )
+   }
+ }
+
+const deleteLoja = async () => {
+    const {data} = await apagaLoja(loja?.id || 0)  
+    await queryClient.invalidateQueries({queryKey: ['lojas','adm']})
+    notify(data.message, 'success')
+    onCloseDelete()
+}
+
+
 
     const salvarLoja = async ({
         logo,
@@ -122,22 +181,20 @@ export default function LojaIndex() {
         const submitData: Loja = {
             ...resto, 
             imageCover,
-            imageLogo,nota:0,
+            imageLogo,
+            nota:0,
             pedidoMinimo: Number(pedidoMinimo.replace(/\D/g,''))/100,
-            taxaEntrega: Number(taxaEntrega.replace(/\D/g,''))/100,
+            taxaEntrega:Number(taxaEntrega.replace(/\D/g,''))/100,
 
     } 
         
-
-     console.log(submitData)
 
         try{
             const response = await cadastraLoja(submitData)
             notify(response.data.message, 'success')
             onClose()
-            reset()
-            useQueryClient.invalidateQuaries({ queryKey: ['lojas','adm'] })
-        }catch (e: any) {
+            queryClient.invalidateQueries({ queryKey: ['lojas','adm'] })
+        } catch (e: any) {
             if(e.response) {
                 notify (e.responde.data.message, 'error')
                 return
@@ -183,11 +240,14 @@ export default function LojaIndex() {
                             aria-label="Editar"
                             icon={<FaPencilAlt />}
                             colorScheme="yellow"
+                            onClick={() => handleEdit(loja)}
                             />
+
                             <IconButton 
                             aria-label="Apagar"
                             icon={<FaTrash />}
                             colorScheme="red"
+                            onClick={() => handleDelete(loja)}
                             />
                             </Flex>
                             </Td>
@@ -281,6 +341,20 @@ export default function LojaIndex() {
             </ModalBody>
         </ModalContent>
     </Modal>
+
+    <ConfirmDelete 
+    isOpen={isOpenDelete} 
+    onClose={onCloseDelete} 
+    onConfirm={deleteLoja}
+    mensagem={`Tem certeza que deseja apagar esta loja ${loja?.nome}?`}
+    />
+
+    <FormLoja
+    isOpen={isOpen}
+    onClose={onClose}
+    salvarLoja={loja? updateLoja: salvarLoja}
+    loja={loja as Loja}
+    />
     </Flex>
     )
 }

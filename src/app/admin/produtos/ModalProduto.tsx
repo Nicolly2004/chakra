@@ -21,7 +21,7 @@ const validacaoProduto = yup.object().shape({
 
     .test({
         name:'preço-minimo',
-        message: 'O preço mínimo deve ser R$ 0,01',
+        message: 'O preço mínimo deve ser R$ 0,00',
         test: (value) => {
             console.log(value)
             if (!value) return false

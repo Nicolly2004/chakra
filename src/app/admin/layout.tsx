@@ -33,6 +33,7 @@ export default function AdminLayout({children}: AdminLayoutProps) {
                 <Flex align="center" justify="flex-end">
                     <UserMenu/>
                 </Flex>
+                
             </Flex>
             </GridItem>
         <GridItem  gridArea="sideMenu">
