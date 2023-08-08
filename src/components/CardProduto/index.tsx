@@ -31,7 +31,10 @@ export const CardProduto: FC<CardProdutoProps> = ({
         _hover = {{transform: 'scale(1.01)'}}
           transition="all 0.2s">
                 <CardBody  padding={0}>
-                    <Image 
+                    <Image
+                    height = "220px"
+                    width="380px"
+                    objectFit="cover" 
                     src={imagem}
                     alt={'Imagem do produto:' + nome}
                     />

@@ -1,6 +1,7 @@
 
     import { useCart } from "@/contexts/CartContext";
     import { formataMoeda } from "@/helpers/formataMoeda";
+import { cadastraPedido, checkout } from "@/services/pagamentoService";
     import { Button,
         Flex, 
         Popover,
@@ -24,6 +25,20 @@
 export const CheckoutButton: FC = () => {
     const { quantidade, valor, produtos, removeFromCart} = useCart()
     
+    const handlePayment = async () => {
+       const pedidoData = { produtos }
+       const response = await cadastraPedido(pedidoData)
+
+       if (response) {
+        const {
+        data : {payment_url} 
+       } = await checkout(response.data.id)
+        window.open(payment_url, '_blank')
+    }
+ }
+
+   
+
     return (
         <Popover>
             <PopoverTrigger>
@@ -97,9 +112,7 @@ export const CheckoutButton: FC = () => {
                          width="100%"
                           colorScheme="green" 
                           leftIcon={<FaCreditCard/>}
-                            as={Link}
-                            href="/pagamento"
-                            >
+                            onClick= {handlePayment}                            >
                             Ir para Formas de Pagamento
                         </Button>
                     </PopoverFooter>

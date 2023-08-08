@@ -1,4 +1,4 @@
-import { getProduto } from "@/services/produtoService"
+import { Produto, getProduto } from "@/services/produtoService"
 import { Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, Image, Divider, ModalFooter, IconButton, Button } from "@chakra-ui/react"
 import { FC, useEffect, useState } from "react"
 import { StarRating } from "../StarRating"
@@ -19,14 +19,18 @@ export const ModalProduto: FC<ModalProdutoPops> = ({
     id,
 }) =>{
     const [quantidade,setQuantidade] = useState(1)
-    const { addToCart } = useCart()
+    const { addToCart } = useCart();
+    const [produto, setProduto] = useState<Produto | null>(null)
 
     const handleClose = () => {
         onClose();
     }
 
 
-    const produto = getProduto(id)
+   useEffect(() => {
+    getProduto(id).then((response) => setProduto(response.data))
+   }, [id])
+   
     useEffect(() => {
         setQuantidade(1)
     }, [isOpen])
@@ -66,6 +70,8 @@ const handleAddToCart = () => {
                         <Image 
                         src={produto?.imagem} 
                         alt={`Imagem do produto: ${produto}`}
+                        objectFit= "cover"
+                        width="220px"
                         />
                         <Flex direction="column" grow={1}>
                             <Text>{produto?.descricao}</Text>
@@ -73,7 +79,7 @@ const handleAddToCart = () => {
                             {produto?.loja && (<>
                             <Flex justify="space-between" my={2}>
                                 <Text>{produto?.loja?.nome}</Text>
-                                <StarRating nota={produto?.loja?.nome as number}/>
+                                <StarRating nota={produto?.loja?.nota as number}/>
                             </Flex>
                             <Divider/>
                             <Flex fontSize="12px" justify="space-between">

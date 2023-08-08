@@ -1,4 +1,3 @@
-import { updateProduto } from './../Database/Queries/produtos';
 import { apiClient } from "@/config/axios"
 import { Loja } from "./lojaService"
 import axios from "axios"

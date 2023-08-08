@@ -62,10 +62,16 @@ onOpen()
          src={dadosLoja.imageCover}
          alt={"Imagem de capa da empresa: " + dadosLoja.nome}
          borderRadius="10px"
+         objectFit="cover"
+         height="250px"
+         width="1200px"
         />
         <Flex align="center" gap={4} mt={2}>
             <Image
              src={dadosLoja.imageLogo} 
+             width="100px"
+             height="100px"
+             objectFit="cover"
             alt={'Logo da empresa: ' + dadosLoja.nome}
             borderRadius="full"
             />
@@ -129,4 +135,6 @@ onOpen()
         <ModalProduto isOpen={isOpen} onClose={onClose} id={addId} />
          </Flex>
    )
+
+   
 }

@@ -12,7 +12,8 @@ type LoginData = {
 
 
 interface TokenClaims{
-    iss:number | string
+    iss?: number | string
+    sub: number | string
     name: string
     email:string
     permissions: string[]
@@ -86,10 +87,10 @@ const login = async (loginData: LoginData) => {
         const TokenClaims = decode<TokenClaims>(data.token);
 
         setUserData({
-         id: TokenClaims.iss as string,
+         id: TokenClaims.sub as string,
          nome: TokenClaims.name,
          email: TokenClaims.email,
-         permissions: TokenClaims.permissions,
+         permissions: TokenClaims.permissoes,
         })
 
         setIsLogged(true);
